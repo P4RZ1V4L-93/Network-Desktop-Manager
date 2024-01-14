@@ -6,7 +6,7 @@ import java.net.Socket;
 public class SendEvents implements KeyListener, MouseMotionListener, MouseListener{
     private Socket cSocket;
     private JPanel cpanel;
-    private PrintWriter printWriter;
+    public static PrintWriter printWriter;
     String width, height;
 
     double w, h;

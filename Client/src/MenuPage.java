@@ -23,6 +23,16 @@ public class MenuPage {
         }
     }
 
+    public MenuPage(Socket socket) {
+        SwingUtilities.invokeLater(this::drawGUI);
+        this.socket = socket;
+        try {
+            out = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     void drawGUI() {
         frame.add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

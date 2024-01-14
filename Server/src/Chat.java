@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -123,6 +124,11 @@ public class Chat extends Thread{
             while(true){
                 try {
                     String message = in.readLine();
+                    if (message.equals(".exit")) {
+                        System.out.println("Client has exited the chat");
+                        frame.dispose();
+                        HomePage.waitForClient();
+                    }
                     chatBox.append(message + "\n");
                 } catch (IOException e) {
                     e.printStackTrace();

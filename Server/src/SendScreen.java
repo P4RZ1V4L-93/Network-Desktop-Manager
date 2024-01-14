@@ -8,7 +8,7 @@ public class SendScreen extends Thread{
     Socket socket;
     Robot robot;
     Rectangle rectangle;
-    boolean continueLoop = true;
+    static boolean continueLoop = true;
     OutputStream out;
 
     public SendScreen(Socket socket, Robot robot, Rectangle rectangle) {

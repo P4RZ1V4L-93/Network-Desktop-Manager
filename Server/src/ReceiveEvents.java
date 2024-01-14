@@ -38,6 +38,12 @@ public class ReceiveEvents extends Thread {
                     case -5:
                         robot.mouseMove(scanner.nextInt(), scanner.nextInt());
                         break;
+                    case -12:
+                        continueLoop = false;
+                        SendScreen.continueLoop = false;
+                        System.out.println("Client has exited the Screen Share");
+
+                        break;
                 }
             }
         } catch (IOException e) {

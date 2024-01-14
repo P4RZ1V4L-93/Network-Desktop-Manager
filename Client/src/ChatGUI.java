@@ -24,6 +24,8 @@ public class ChatGUI extends Thread{
     JTextField messageBox;
     JTextArea chatBox;
 
+    JButton goBack;
+
     Socket socket;
 
     BufferedReader in;
@@ -55,6 +57,18 @@ public class ChatGUI extends Thread{
 
         sendMessage = new JButton("Send Message");
         sendMessage.addActionListener(new sendMessageButtonListener());
+
+        goBack = new JButton("Go Back");
+        goBack.addActionListener(e -> {
+            try {
+                out.write(".exit\n");
+                frame.dispose();
+                new MenuPage(socket);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        });
 
         chatBox = new JTextArea();
         chatBox.setEditable(false);

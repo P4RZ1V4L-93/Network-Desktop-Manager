@@ -12,6 +12,9 @@ public class ScreenGUI extends Thread {
     private JInternalFrame internalFrame = new JInternalFrame("Server Screen", true, true, true, true);
     private JPanel panel = new JPanel();
 
+    JButton goBack = new JButton("Go Back");
+    SendEvents sendEvents;
+
     public ScreenGUI(Socket socket) {
         this.socket = socket;
         start();
@@ -20,12 +23,17 @@ public class ScreenGUI extends Thread {
     public void drawGUI() {
         frame.add(desktopPane, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
         internalFrame.setLayout(new BorderLayout());
         internalFrame.getContentPane().add(panel, BorderLayout.CENTER);
         internalFrame.setSize(100, 100);
+        desktopPane.add(goBack);
+        goBack.addActionListener(e -> {
+            SendEvents.printWriter.println(Window.Menu.getValue());
+            frame.dispose();
+            new MenuPage(socket);
+        });
         desktopPane.add(internalFrame);
 
         try {
