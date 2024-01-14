@@ -5,15 +5,18 @@ import java.net.Socket;
 import java.io.*;
 
 public class ScreenGUI extends Thread {
-    String width, height;
+    static String width, height;
     private JFrame frame = new JFrame();
     private JDesktopPane desktopPane = new JDesktopPane();
     private Socket socket;
     private JInternalFrame internalFrame = new JInternalFrame("Server Screen", true, true, true, true);
     private JPanel panel = new JPanel();
 
-    JButton goBack = new JButton("Go Back");
+    ReceivingScreen receivingScreen;
     SendEvents sendEvents;
+
+    JButton goBack = new JButton("Go Back");
+
 
     public ScreenGUI(Socket socket) {
         this.socket = socket;
@@ -28,13 +31,17 @@ public class ScreenGUI extends Thread {
         internalFrame.setLayout(new BorderLayout());
         internalFrame.getContentPane().add(panel, BorderLayout.CENTER);
         internalFrame.setSize(100, 100);
-        desktopPane.add(goBack);
+
         goBack.addActionListener(e -> {
             SendEvents.printWriter.println(Window.Menu.getValue());
-            frame.dispose();
+            SendEvents.printWriter.flush();
+            closeWindow();
             new MenuPage(socket);
         });
+
+        internalFrame.getContentPane().add(goBack, BorderLayout.SOUTH);
         desktopPane.add(internalFrame);
+
 
         try {
             internalFrame.setMaximum(true);
@@ -57,7 +64,13 @@ public class ScreenGUI extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new ReceivingScreen(in, panel);
-        new SendEvents(socket, panel, width, height);
+        receivingScreen = new ReceivingScreen(in, panel);
+        sendEvents = new SendEvents(socket, panel, width, height);
+    }
+
+    public void closeWindow() {
+        receivingScreen.closeWindow();
+        sendEvents.close();
+        frame.dispose();
     }
 }

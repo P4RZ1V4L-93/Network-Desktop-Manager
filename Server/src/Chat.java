@@ -101,6 +101,18 @@ public class Chat extends Thread{
         new ReceiveMessage().start();
     }
 
+    public void closeChat() {
+        try {
+            continueloop = false;
+            in.close();
+            out.close();
+            frame.dispose();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     class sendMessageButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if (messageBox.getText().isEmpty()) {
@@ -129,8 +141,7 @@ public class Chat extends Thread{
                     String message = in.readLine();
                     if (message.equals(".exit")) {
                         System.out.println("Client has exited the chat");
-                        continueloop = false;
-                        frame.dispose();
+                        closeChat();
                         HomePage.waitForClient();
                     }
                     chatBox.append(message + "\n");

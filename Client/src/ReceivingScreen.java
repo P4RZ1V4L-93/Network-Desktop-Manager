@@ -4,9 +4,8 @@ import javax.swing.*;
 import javax.imageio.ImageIO;
 
 public class ReceivingScreen extends Thread {
-    private ObjectInputStream objectInputStream;
     private JPanel panel;
-    private boolean continueLoop=true;
+    boolean continueLoop=true;
     InputStream oin;
     Image image1;
 
@@ -19,7 +18,7 @@ public class ReceivingScreen extends Thread {
     @Override
     public void run() {
         try {
-            while (true)
+            while (continueLoop)
             {
                 byte[] bytes = new byte[1024*1024];
                 int count=0;
@@ -35,6 +34,15 @@ public class ReceivingScreen extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void closeWindow() {
+        continueLoop = false;
+        try {
+            oin.close();
+            image1 = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

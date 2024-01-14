@@ -9,7 +9,7 @@ public class SendScreen extends Thread{
     Robot robot;
     Rectangle rectangle;
     static boolean continueLoop = true;
-    OutputStream out;
+    static OutputStream out;
 
     public SendScreen(Socket socket, Robot robot, Rectangle rectangle) {
         this.socket = socket;
@@ -38,6 +38,15 @@ public class SendScreen extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void closeWindow() {
+        continueLoop = false;
+        try {
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

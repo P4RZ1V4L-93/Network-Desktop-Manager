@@ -29,6 +29,13 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
         }
     }
 
+    public void close(){
+        cpanel.removeKeyListener(this);
+        cpanel.removeMouseListener(this);
+        cpanel.removeMouseMotionListener(this);
+        printWriter.close();
+    }
+
     @Override
     public void mouseDragged(MouseEvent e) {
 

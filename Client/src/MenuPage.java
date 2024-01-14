@@ -17,7 +17,7 @@ public class MenuPage {
         try {
             this.socket = new Socket(ip, port);
             out = new PrintWriter(socket.getOutputStream(), true);
-            System.out.println("Connecting to the server");
+            System.out.println("Connected to the server");
         } catch (IOException e) {
             e.printStackTrace();
         }

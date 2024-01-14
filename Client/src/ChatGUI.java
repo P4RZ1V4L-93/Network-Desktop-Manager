@@ -63,7 +63,7 @@ public class ChatGUI extends Thread{
             try {
                 out.write(".exit\n");
                 out.flush();
-                frame.dispose();
+                closeWindow();
                 new MenuPage(socket);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -148,5 +148,15 @@ public class ChatGUI extends Thread{
                 }
             }
         }
+    }
+
+    public void closeWindow() {
+        try {
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        frame.dispose();
     }
 }

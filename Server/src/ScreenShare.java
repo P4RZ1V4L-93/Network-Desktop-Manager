@@ -6,13 +6,14 @@ public class ScreenShare {
     public ScreenShare(Socket socket) {
         Robot robot;
         Rectangle rectangle;
+        String width, height;
 
         try {
             GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice gDev = gEnv.getDefaultScreenDevice();
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-            String width = String.valueOf(dim.getWidth());
-            String height = String.valueOf(dim.getHeight());
+            width = String.valueOf(dim.getWidth());
+            height = String.valueOf(dim.getHeight());
 
             rectangle = new Rectangle(dim);
             robot = new Robot(gDev);

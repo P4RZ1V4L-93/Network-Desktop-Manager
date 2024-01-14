@@ -15,6 +15,7 @@ public class HomePage {
             System.out.println("Server started");
             System.out.println("Server is running on " + serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort());
             System.out.println("Waiting for client...");
+
             while (true) {
                 socket = serverSocket.accept();
                 System.out.println("Client connected");

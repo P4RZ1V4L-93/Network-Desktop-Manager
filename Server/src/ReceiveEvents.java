@@ -40,9 +40,8 @@ public class ReceiveEvents extends Thread {
                         break;
                     case -12:
                         continueLoop = false;
-                        SendScreen.continueLoop = false;
+                        SendScreen.closeWindow();
                         System.out.println("Client has exited the Screen Share");
-
                         break;
                 }
             }
