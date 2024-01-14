@@ -38,7 +38,7 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
         double xScale = (double) w / cpanel.getWidth();
         double yScale = (double) h / cpanel.getHeight();
         try {
-            out.write(Commands.MOVE_MOUSE.getAbbrev());
+            out.writeInt(Commands.MOVE_MOUSE.getAbbrev());
             out.writeInt((int) (e.getX() * xScale));
             out.writeInt((int) (e.getY() * yScale));
             out.flush();
@@ -55,7 +55,7 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
     @Override
     public void mousePressed(MouseEvent e) {
         try {
-            out.write(Commands.PRESS_MOUSE.getAbbrev());
+            out.writeInt(Commands.PRESS_MOUSE.getAbbrev());
             int button = e.getButton();
             int xButton = 16;
             if (button == 3) {
@@ -71,7 +71,7 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
     @Override
     public void mouseReleased(MouseEvent e) {
         try {
-            out.write(Commands.RELEASE_MOUSE.getAbbrev());
+            out.writeInt(Commands.RELEASE_MOUSE.getAbbrev());
             int button = e.getButton();
             int xButton = 16;
             if (button == 3) {
@@ -103,7 +103,7 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
     @Override
     public void keyPressed(KeyEvent e) {
         try {
-            out.write(Commands.PRESS_KEY.getAbbrev());
+            out.writeInt(Commands.PRESS_KEY.getAbbrev());
             out.writeInt(e.getKeyCode());
             out.flush();
         } catch (IOException ex) {
@@ -115,7 +115,7 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
     @Override
     public void keyReleased(KeyEvent e) {
         try {
-            out.write(Commands.RELEASE_KEY.getAbbrev());
+            out.writeInt(Commands.RELEASE_KEY.getAbbrev());
             out.writeInt(e.getKeyCode());
             out.flush();
         } catch (IOException ex) {
