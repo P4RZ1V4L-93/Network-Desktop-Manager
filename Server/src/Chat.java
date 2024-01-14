@@ -29,6 +29,8 @@ public class Chat extends Thread{
     BufferedReader in;
     BufferedWriter out;
 
+    boolean continueloop = true;
+
     public Chat(Socket socket) {
         this.socket = socket;
         try {
@@ -85,6 +87,7 @@ public class Chat extends Thread{
         frame.setSize(470, 300);
         frame.setVisible(true);
         frame.setName("Chat Window");
+        frame.setTitle("Server Chat");
     }
 
     @Override
@@ -94,7 +97,7 @@ public class Chat extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SwingUtilities.invokeLater(() -> display());
+        SwingUtilities.invokeLater(this::display);
         new ReceiveMessage().start();
     }
 
@@ -121,11 +124,13 @@ public class Chat extends Thread{
 
     class ReceiveMessage extends Thread{
         public void run(){
-            while(true){
+            while(continueloop){
                 try {
                     String message = in.readLine();
+                    System.out.println(message);
                     if (message.equals(".exit")) {
                         System.out.println("Client has exited the chat");
+                        continueloop = false;
                         frame.dispose();
                         HomePage.waitForClient();
                     }

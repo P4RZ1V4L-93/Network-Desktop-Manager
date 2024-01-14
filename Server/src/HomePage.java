@@ -27,7 +27,7 @@ public class HomePage {
     }
 
     public static void waitForClient() {
-        System.out.println("Waiting for client to choose a window");
+        System.out.print("Waiting for client to choose a window: ");
         int window = scanner.nextInt();
         switch (window) {
             case -10:

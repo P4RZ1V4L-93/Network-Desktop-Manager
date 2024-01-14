@@ -62,6 +62,7 @@ public class ChatGUI extends Thread{
         goBack.addActionListener(e -> {
             try {
                 out.write(".exit\n");
+                out.flush();
                 frame.dispose();
                 new MenuPage(socket);
             } catch (IOException ex) {
@@ -92,6 +93,7 @@ public class ChatGUI extends Thread{
 
         southPanel.add(messageBox, left);
         southPanel.add(sendMessage, right);
+        southPanel.add(goBack, right);
 
         mainPanel.add(BorderLayout.SOUTH, southPanel);
 
@@ -100,6 +102,7 @@ public class ChatGUI extends Thread{
         frame.setSize(470, 300);
         frame.setVisible(true);
         frame.setName("Chat Window");
+        frame.setTitle("Client Chat");
     }
 
     @Override
@@ -109,7 +112,7 @@ public class ChatGUI extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SwingUtilities.invokeLater(() -> display());
+        display();
         new ReceiveMessage().start();
     }
 
