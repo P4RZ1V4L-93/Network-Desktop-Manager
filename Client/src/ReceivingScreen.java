@@ -6,10 +6,10 @@ import javax.imageio.ImageIO;
 public class ReceivingScreen extends Thread {
     private JPanel panel;
     boolean continueLoop=true;
-    InputStream oin;
+    DataInputStream oin;
     Image image1;
 
-    public ReceivingScreen(InputStream oin, JPanel panel) {
+    public ReceivingScreen(DataInputStream oin, JPanel panel) {
         this.panel = panel;
         this.oin = oin;
         start();
@@ -29,18 +29,11 @@ public class ReceivingScreen extends Thread {
                 image1 = image1.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_FAST);
 
                 Graphics graphics = panel.getGraphics();
+                if (graphics == null) {
+                    continue;
+                }
                 graphics.drawImage(image1, 0, 0, panel.getWidth(), panel.getHeight(), panel);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void closeWindow() {
-        continueLoop = false;
-        try {
-            oin.close();
-            image1 = null;
         } catch (IOException e) {
             e.printStackTrace();
         }

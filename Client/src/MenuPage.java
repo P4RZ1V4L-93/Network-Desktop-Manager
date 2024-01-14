@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -8,7 +10,8 @@ public class MenuPage {
     JFrame frame = new JFrame();
     JPanel panel = new JPanel();
 
-    PrintWriter out;
+    DataInputStream in;
+    DataOutputStream out;
 
     public MenuPage(String ip, int port) {
 
@@ -16,21 +19,20 @@ public class MenuPage {
 
         try {
             this.socket = new Socket(ip, port);
-            out = new PrintWriter(socket.getOutputStream(), true);
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
             System.out.println("Connected to the server");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public MenuPage(Socket socket) {
+    public MenuPage(Socket socket, DataInputStream in, DataOutputStream out) {
         SwingUtilities.invokeLater(this::drawGUI);
-        this.socket = socket;
-        try {
-            out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            this.socket = socket;
+            this.in = in;
+            this.out = out;
+            System.out.println("Back to the menu");
     }
 
     void drawGUI() {
@@ -41,17 +43,27 @@ public class MenuPage {
 
         JButton ScreenShare = new JButton("Screen Share");
         ScreenShare.addActionListener(e -> {
-            frame.dispose();
-            out.println(Window.ScreenShare.getValue());
-            new ScreenGUI(socket);
-        });
-        JButton Chat = new JButton("Chat");
-        Chat.addActionListener(e -> {
-            frame.dispose();
-            out.println(Window.Chat.getValue());
-            new ChatGUI(socket);
+            try {
+                frame.dispose();
+                out.writeInt(Window.ScreenShare.getValue());
+                out.flush();
+                new ScreenGUI(socket, in, out);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
 
+        JButton Chat = new JButton("Chat");
+        Chat.addActionListener(e -> {
+            try {
+                frame.dispose();
+                out.writeInt(Window.Chat.getValue());
+                out.flush();
+                new ChatGUI(socket, in, out);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         panel.add(ScreenShare);
         panel.add(Chat);
     }

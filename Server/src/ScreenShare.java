@@ -3,7 +3,8 @@ import java.io.*;
 import java.net.Socket;
 
 public class ScreenShare {
-    public ScreenShare(Socket socket) {
+    SendScreen sendScreen;
+    public ScreenShare(Socket socket, DataOutputStream out, DataInputStream in) {
         Robot robot;
         Rectangle rectangle;
         String width, height;
@@ -18,12 +19,11 @@ public class ScreenShare {
             rectangle = new Rectangle(dim);
             robot = new Robot(gDev);
 
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             out.writeUTF(width);
             out.writeUTF(height);
 
-            new SendScreen(socket, robot, rectangle);
-            new ReceiveEvents(socket, robot);
+            sendScreen = new SendScreen(socket, robot, rectangle, out);
+            new ReceiveEvents(socket, robot, in, sendScreen);
 
         } catch (IOException | AWTException e) {
             e.printStackTrace();

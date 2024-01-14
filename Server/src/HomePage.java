@@ -1,3 +1,5 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -6,8 +8,9 @@ import java.util.Scanner;
 
 
 public class HomePage {
-    public static Scanner scanner;
     public static Socket socket;
+    static DataOutputStream out;
+    static DataInputStream in;
 
     public void initialize() {
         try {
@@ -19,26 +22,36 @@ public class HomePage {
             while (true) {
                 socket = serverSocket.accept();
                 System.out.println("Client connected");
-                scanner = new Scanner(socket.getInputStream());
-                waitForClient();
+                in = new DataInputStream(socket.getInputStream());
+                out = new DataOutputStream(socket.getOutputStream());
+                waitForClient(0);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void waitForClient() {
-        System.out.print("Waiting for client to choose a window: ");
-        int window = scanner.nextInt();
-        switch (window) {
-            case -10:
-                System.out.println("Screen Share");
-                new ScreenShare(socket);
-                break;
-            case -11:
-                System.out.println("Chat");
-                new Chat(socket);
-                break;
+    public static void waitForClient(int signal) {
+        try {
+            if (signal == 1) {
+                out.writeUTF("");
+                out.flush();
+            }
+
+            System.out.print("Waiting for client to choose a window: ");
+            int window = in.readInt();
+            switch (window) {
+                case -10:
+                    System.out.println("Screen Share");
+                    new ScreenShare(socket, out, in);
+                    break;
+                case -11:
+                    System.out.println("Chat");
+                    new Chat(socket, out, in);
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

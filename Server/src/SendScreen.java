@@ -8,45 +8,30 @@ public class SendScreen extends Thread{
     Socket socket;
     Robot robot;
     Rectangle rectangle;
-    static boolean continueLoop = true;
-    static OutputStream out;
+    boolean continueLoop = true;
+    DataOutputStream out;
 
-    public SendScreen(Socket socket, Robot robot, Rectangle rectangle) {
+    public SendScreen(Socket socket, Robot robot, Rectangle rectangle, OutputStream out) {
         this.socket = socket;
         this.robot = robot;
         this.rectangle = rectangle;
+        this.out = new DataOutputStream(out);
         start();
     }
 
     @Override
     public void run() {
         try {
-            out = socket.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        while (continueLoop) {
-            BufferedImage image = robot.createScreenCapture(rectangle);
-            try {
+            while (continueLoop) {
+                BufferedImage image = robot.createScreenCapture(rectangle);
                 ImageIO.write(image, "jpeg", out);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
                 Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }
-    }
-
-    public static void closeWindow() {
-        continueLoop = false;
-        try {
-            out.close();
-        } catch (IOException e) {
+            System.out.println("Client has exited the Screen Share");
+            out.flush();
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
+
 }

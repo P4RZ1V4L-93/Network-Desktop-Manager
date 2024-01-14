@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
-import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,19 +25,15 @@ public class Chat extends Thread{
     JTextArea chatBox;
 
     Socket socket;
-    BufferedReader in;
-    BufferedWriter out;
+    DataOutputStream out;
+    DataInputStream in;
 
     boolean continueloop = true;
 
-    public Chat(Socket socket) {
+    public Chat(Socket socket, DataOutputStream out, DataInputStream in) {
         this.socket = socket;
-        try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.out = out;
+        this.in = in;
         start();
     }
 
@@ -101,17 +96,6 @@ public class Chat extends Thread{
         new ReceiveMessage().start();
     }
 
-    public void closeChat() {
-        try {
-            continueloop = false;
-            in.close();
-            out.close();
-            frame.dispose();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
     class sendMessageButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
@@ -122,7 +106,7 @@ public class Chat extends Thread{
                 messageBox.setText("");
             } else {
                 try {
-                    out.write("Server: " + messageBox.getText() + "\n");
+                    out.writeUTF("Server: " + messageBox.getText() + "\n");
                     out.flush();
                     chatBox.append("<You>:  " + messageBox.getText() + "\n");
                     messageBox.setText("");
@@ -138,11 +122,12 @@ public class Chat extends Thread{
         public void run(){
             while(continueloop){
                 try {
-                    String message = in.readLine();
+                    String message = in.readUTF();
                     if (message.equals(".exit")) {
                         System.out.println("Client has exited the chat");
-                        closeChat();
-                        HomePage.waitForClient();
+                        continueloop = false;
+                        frame.dispose();
+                        HomePage.waitForClient(1);
                     }
                     chatBox.append(message + "\n");
                 } catch (IOException e) {

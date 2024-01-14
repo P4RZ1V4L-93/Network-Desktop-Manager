@@ -17,9 +17,14 @@ public class ScreenGUI extends Thread {
 
     JButton goBack = new JButton("Go Back");
 
+    DataInputStream in;
+    DataOutputStream out;
 
-    public ScreenGUI(Socket socket) {
+
+    public ScreenGUI(Socket socket, DataInputStream in, DataOutputStream out) {
         this.socket = socket;
+        this.in = in;
+        this.out = out;
         start();
     }
 
@@ -33,15 +38,20 @@ public class ScreenGUI extends Thread {
         internalFrame.setSize(100, 100);
 
         goBack.addActionListener(e -> {
-            SendEvents.printWriter.println(Window.Menu.getValue());
-            SendEvents.printWriter.flush();
-            closeWindow();
-            new MenuPage(socket);
+            try {
+                out.writeInt(Window.Menu.getValue());
+                out.flush();
+                receivingScreen.continueLoop = false;
+                internalFrame.dispose();
+                frame.dispose();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            new MenuPage(socket, in, out);
         });
 
         internalFrame.getContentPane().add(goBack, BorderLayout.SOUTH);
         desktopPane.add(internalFrame);
-
 
         try {
             internalFrame.setMaximum(true);
@@ -54,23 +64,14 @@ public class ScreenGUI extends Thread {
 
     @Override
     public void run() {
-        InputStream in = null;
         drawGUI();
         try {
-            in = socket.getInputStream();
-            DataInputStream dataInputStream = new DataInputStream(in);
-            width = dataInputStream.readUTF();
-            height = dataInputStream.readUTF();
+            width = in.readUTF();
+            height = in.readUTF();
         } catch (IOException e) {
             e.printStackTrace();
         }
         receivingScreen = new ReceivingScreen(in, panel);
-        sendEvents = new SendEvents(socket, panel, width, height);
-    }
-
-    public void closeWindow() {
-        receivingScreen.closeWindow();
-        sendEvents.close();
-        frame.dispose();
+        sendEvents = new SendEvents(socket, panel, width, height, out);
     }
 }

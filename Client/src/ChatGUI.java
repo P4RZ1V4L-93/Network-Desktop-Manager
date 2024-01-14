@@ -28,18 +28,15 @@ public class ChatGUI extends Thread{
 
     Socket socket;
 
-    BufferedReader in;
-    BufferedWriter out;
+    DataInputStream in;
+    DataOutputStream out;
 
-    public ChatGUI(Socket socket) {
+    boolean continueloop = true;
+
+    public ChatGUI(Socket socket, DataInputStream in, DataOutputStream out) {
         this.socket = socket;
-
-        try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.in = in;
+        this.out = out;
         start();
     }
 
@@ -61,14 +58,14 @@ public class ChatGUI extends Thread{
         goBack = new JButton("Go Back");
         goBack.addActionListener(e -> {
             try {
-                out.write(".exit\n");
+                out.writeUTF(".exit");
                 out.flush();
-                closeWindow();
-                new MenuPage(socket);
+                continueloop = false;
+                frame.dispose();
+                new MenuPage(socket, in, out);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-
         });
 
         chatBox = new JTextArea();
@@ -125,7 +122,7 @@ public class ChatGUI extends Thread{
                 messageBox.setText("");
             } else {
                 try {
-                    out.write( "Client: " + messageBox.getText() + "\n");
+                    out.writeUTF( "Client: " + messageBox.getText() + "\n");
                     out.flush();
                     chatBox.append("<You>:  " + messageBox.getText() + "\n");
                     messageBox.setText("");
@@ -139,24 +136,14 @@ public class ChatGUI extends Thread{
 
     class ReceiveMessage extends Thread{
         public void run(){
-            while(true){
+            while(continueloop){
                 try {
-                    String message = in.readLine();
+                    String message = in.readUTF();
                     chatBox.append(message + "\n");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-    }
-
-    public void closeWindow() {
-        try {
-            out.close();
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        frame.dispose();
     }
 }
