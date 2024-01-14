@@ -127,7 +127,6 @@ public class Chat extends Thread{
             while(continueloop){
                 try {
                     String message = in.readLine();
-                    System.out.println(message);
                     if (message.equals(".exit")) {
                         System.out.println("Client has exited the chat");
                         continueloop = false;
