@@ -16,7 +16,8 @@ public class HomePage {
         try {
             ServerSocket serverSocket = new ServerSocket(0, 1, InetAddress.getLocalHost());
             System.out.println("Server started");
-            System.out.println("Server is running on " + serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort());
+            System.out.println("Server is running on " + serverSocket.getInetAddress().getHostAddress()
+                    + ":" + serverSocket.getLocalPort());
             System.out.println("Waiting for client...");
 
             while (true) {

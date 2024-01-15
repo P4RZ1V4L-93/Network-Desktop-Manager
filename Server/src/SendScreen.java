@@ -22,13 +22,12 @@ public class SendScreen extends Thread{
     @Override
     public void run() {
         try {
-            while (continueLoop) {
+            do {
                 BufferedImage image = robot.createScreenCapture(rectangle);
                 ImageIO.write(image, "jpeg", out);
                 Thread.sleep(10);
-            }
+            } while (continueLoop);
             System.out.println("Client has exited the Screen Share");
-            out.flush();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

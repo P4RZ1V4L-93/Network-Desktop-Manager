@@ -19,6 +19,7 @@ public class Login {
         frame.setSize(300, 100);
         frame.setLocation(500, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTitle("Client Login");
 
         frame.add(panel);
         panel.add(IPLabel);

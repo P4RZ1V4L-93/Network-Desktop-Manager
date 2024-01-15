@@ -58,7 +58,9 @@ public class ScreenGUI extends Thread {
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
+        goBack.setFocusable(false);
         panel.setFocusable(true);
+        panel.requestFocusInWindow();
         internalFrame.setVisible(true);
     }
 

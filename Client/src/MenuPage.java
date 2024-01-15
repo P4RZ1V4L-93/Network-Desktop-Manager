@@ -38,8 +38,9 @@ public class MenuPage {
     void drawGUI() {
         frame.add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
+        frame.setSize(300, 100);
         frame.setVisible(true);
+        frame.setTitle("Client Menu Page");
 
         JButton ScreenShare = new JButton("Screen Share");
         ScreenShare.addActionListener(e -> {
